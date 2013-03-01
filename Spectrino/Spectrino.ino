@@ -5,24 +5,30 @@ int digit1 = 0; // first digit to display
 int digit2 = 0; // second digit to display
 int digit3 = 0; // third digit to display
 int digit4 = 0; // fourth digit to display
-int clock = 5; // clock for shift registers
-int datapin1 = 10; // datapin for shift register 1
-int datapin2 = 11; // datapin for shift register 2
-int datapin3 = 12; // datapin for shift register 3
-int datapin4 = 13; // datapin for shift register 4
-int strclock = 9;
+int datapin = 5; // datapin for shift registers
+int strclock = 9; // clock for storage registers
+int clock1 = 10; // clock for shift register 1
+int clock2 = 11; // clock for shift register 2
+int clock3 = 12; // clock for shift register 3
+int clock4 = 13; // clock for shift register 4
+int clrclock = 6; // clear clock
 
 void setup()
 {
   Serial.begin(9600); // Setup Data link to Computer; 9600 bps
   
   // Output to each shift register + clocks
-  pinMode(datapin1, OUTPUT);
-  pinMode(datapin2, OUTPUT);
-  pinMode(datapin3, OUTPUT);
-  pinMode(datapin4, OUTPUT);
-  pinMode(clock, OUTPUT);
+  pinMode(datapin, OUTPUT);
+  pinMode(clock1, OUTPUT);
+  pinMode(clock2, OUTPUT);
+  pinMode(clock3, OUTPUT);
+  pinMode(clock4, OUTPUT);
   pinMode(strclock, OUTPUT);
+  pinMode(clrclock, OUTPUT);
+  
+  // Clear Registers
+  digitalWrite(clrclock, LOW);
+  digitalWrite(clrclock, HIGH);
 }
 
 void loop()
@@ -50,14 +56,14 @@ void loop()
   
   // Display each digit; output to shift registers
   digitalWrite(strclock, LOW);
-  shiftOut(datapin1, clock, MSBFIRST, digit28bit(digit1, 0));
-  shiftOut(datapin2, clock, MSBFIRST, digit28bit(digit2, 0));
-  shiftOut(datapin3, clock, MSBFIRST, digit28bit(digit3, 0));
-  shiftOut(datapin4, clock, MSBFIRST, digit28bit(digit4, 0));
+  shiftOut(datapin, clock1, MSBFIRST, digit28bit(digit1, 0));
+  shiftOut(datapin, clock2, MSBFIRST, digit28bit(digit2, 0));
+  shiftOut(datapin, clock3, MSBFIRST, digit28bit(digit3, 0));
+  shiftOut(datapin, clock4, MSBFIRST, digit28bit(digit4, 0));
   digitalWrite(strclock, HIGH);
   
   // Wait for 1000 ms
-  delay(5000);
+  delay(1000);
 }
 
 
@@ -75,10 +81,10 @@ int digit28bit(int digit, int decimal)
   {
     // Digits 0 - 9
     case 0:
-      eightbit = 55;
+      eightbit = 1;
       break;
     case 1:
-      eightbit = 1;
+      eightbit = 55;
       break;
     case 2:
       eightbit = 66;
