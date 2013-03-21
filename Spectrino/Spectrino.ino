@@ -36,7 +36,7 @@ void loop()
   sensorValue = analogRead(analogPin); // Read voltage at analog pin 2
   rawoutput = floor(5000*(sensorValue/1023)); // convert value to mV
   // Some Signal Processing to change for 5 - 3 V to 0 - 5 V
-  output = (((-1*rawoutput) + 5000)*2.5)
+  output = (((-1*rawoutput) + 5000)*2.5);
   Serial.println(output); // Outputs voltage to console
   
   // Get each digit value
