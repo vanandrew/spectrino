@@ -34,7 +34,9 @@ void setup()
 void loop()
 { 
   sensorValue = analogRead(analogPin); // Read voltage at analog pin 2
-  output = floor(5000*(sensorValue/1023)); // convert value to mV
+  rawoutput = floor(5000*(sensorValue/1023)); // convert value to mV
+  // Some Signal Processing to change for 5 - 3 V to 0 - 5 V
+  output = (((-1*rawoutput) + 5000)*2.5)
   Serial.println(output); // Outputs voltage to console
   
   // Get each digit value
@@ -48,11 +50,12 @@ void loop()
   // Serial.println(digit2);
   // Serial.println(digit3);
   // Serial.println(digit4);
-  
-  Serial.println(digit28bit(digit1, 0));
-  Serial.println(digit28bit(digit2, 0));
-  Serial.println(digit28bit(digit3, 0));
-  Serial.println(digit28bit(digit4, 0));  
+   
+  // Print convert digit to console (FOR DEBUG ONLY)
+  // Serial.println(digit28bit(digit1, 0));
+  // Serial.println(digit28bit(digit2, 0));
+  // Serial.println(digit28bit(digit3, 0));
+  // Serial.println(digit28bit(digit4, 0));  
   
   // Display each digit; output to shift registers
   digitalWrite(strclock, LOW);
