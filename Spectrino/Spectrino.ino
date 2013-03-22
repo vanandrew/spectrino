@@ -1,6 +1,7 @@
 int analogPin = 2; // sensor output connected to analog pin 2
 double sensorValue = 0; // variable to store the ADC value of the photodiode
-int output = 0; // output
+int output = 0; //processed output
+int rawoutput = 0; // raw output
 int digit1 = 0; // first digit to display
 int digit2 = 0; // second digit to display
 int digit3 = 0; // third digit to display
