@@ -16,7 +16,8 @@ int clrclock = 6; // clear clock
 
 void setup()
 {
-  Serial.begin(9600); // Setup Data link to Computer; 9600 bps
+  // (FOR DEBUG ONLY)
+  // Serial.begin(9600); // Setup Data link to Computer; 9600 bps
   
   // Output to each shift register + clocks
   pinMode(datapin, OUTPUT);
@@ -41,10 +42,10 @@ void loop()
   Serial.println(output); // Outputs voltage to console
   
   // Get each digit value
-  digit1 = floor((output % 10000)/1000);
-  digit2 = floor((output % 1000)/100);
-  digit3 = floor((output % 100)/10);
-  digit4 = output % 10;
+  digit1 = getdigit(output, 1);
+  digit2 = getdigit(output, 2);
+  digit3 = getdigit(output, 3);
+  digit4 = getdigit(output, 4);
   
   // Print each digit (FOR DEBUG ONLY)
   // Serial.println(digit1);
@@ -70,6 +71,31 @@ void loop()
   delay(1000);
 }
 
+
+int getdigit(int value, int digit)
+{
+  int returndigit;
+
+  switch(digit)
+  {
+    case 1:
+      returndigit = floor((value % 10000)/1000);
+      break;
+    case 2:
+      returndigit = floor((value % 1000)/100);
+      break;
+    case 3:
+      returndigit = floor((value % 100)/10);
+      break;
+    case 4:
+      returndigit = value % 10;
+      break;
+    default:
+      returndigit = 0;
+  }
+
+  return returndigit;
+}
 
 /*
 USAGE
