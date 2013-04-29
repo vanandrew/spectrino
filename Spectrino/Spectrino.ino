@@ -71,7 +71,7 @@ void loop()
   delay(1000);
 }
 
-
+// Obtain digit from value; digit can be (1 - 4)
 int getdigit(int value, int digit)
 {
   int returndigit;
