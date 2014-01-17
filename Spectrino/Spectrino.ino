@@ -1,5 +1,6 @@
 /* 
   This code is for the Spectrino project, a world health application of the arduino board to make a spectrophotometer
+  Written by Andrew Van, Jeffrey Smith, and Claire Kalkbrenner
 */
 
 int analogPin = 2; // sensor output connected to analog pin 2
