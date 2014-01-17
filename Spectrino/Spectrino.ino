@@ -1,3 +1,7 @@
+/* 
+  This code is for the Spectrino project, a world health application of the arduino board to make a spectrophotometer
+*/
+
 int analogPin = 2; // sensor output connected to analog pin 2
 double sensorValue = 0; // variable to store the ADC value of the photodiode
 int output = 0; //processed output
