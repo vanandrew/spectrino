@@ -3,158 +3,68 @@
   Written by Andrew Van, Jeffrey Smith, and Claire Kalkbrenner
 */
 
-int analogPin = 2; // sensor output connected to analog pin 2
-double sensorValue = 0; // variable to store the ADC value of the photodiode
-int output = 0; //processed output
-int rawoutput = 0; // raw output
-int digit1 = 0; // first digit to display
-int digit2 = 0; // second digit to display
-int digit3 = 0; // third digit to display
-int digit4 = 0; // fourth digit to display
-int datapin = 5; // datapin for shift registers
-int strclock = 9; // clock for storage registers
-int clock1 = 10; // clock for shift register 1
-int clock2 = 11; // clock for shift register 2
-int clock3 = 12; // clock for shift register 3
-int clock4 = 13; // clock for shift register 4
-int clrclock = 6; // clear clock
+#include <FHT.h> // Include Fast Hartley Transform Library
+
+uint16_t freq;
 
 void setup()
 {
-  // (FOR DEBUG ONLY)
-  // Serial.begin(9600); // Setup Data link to Computer; 9600 bps
-  
-  // Output to each shift register + clocks
-  pinMode(datapin, OUTPUT);
-  pinMode(clock1, OUTPUT);
-  pinMode(clock2, OUTPUT);
-  pinMode(clock3, OUTPUT);
-  pinMode(clock4, OUTPUT);
-  pinMode(strclock, OUTPUT);
-  pinMode(clrclock, OUTPUT);
-  
-  // Clear Registers
-  digitalWrite(clrclock, LOW);
-  digitalWrite(clrclock, HIGH);
+  DDRD = DDRD | B00000000; //Set all  pins(0 to 7) to read mode
+  Serial.begin(9600); // Setup serial connection with 9600 bps baud rate
+  Serial.println("Begin Stream");
 }
 
 void loop()
-{ 
-  sensorValue = analogRead(analogPin); // Read voltage at analog pin 2
-  rawoutput = floor(5000*(sensorValue/1023)); // convert value to mV
-  // Some Signal Processing to change for 5 - 3 V to 0 - 5 V
-  output = (((-1*rawoutput) + 5000)*2.5);
-  Serial.println(output); // Outputs voltage to console
-  
-  // Get each digit value
-  digit1 = getdigit(output, 1);
-  digit2 = getdigit(output, 2);
-  digit3 = getdigit(output, 3);
-  digit4 = getdigit(output, 4);
-  
-  // Print each digit (FOR DEBUG ONLY)
-  // Serial.println(digit1);
-  // Serial.println(digit2);
-  // Serial.println(digit3);
-  // Serial.println(digit4);
+{
+  while(1) // Create indefinite while loop for stable loop
+  {
+    delay(1000);
+    for(int i = 0; i < FHT_N; i++) // Read in signal; 256 sample window
+    {
+      fht_input[i] = ((int) bitRead(PIND,2))*255; // Stores an int value in the fht array    
+      delayMicroseconds(10); // Sample every 10 microseconds
+    }
+    
+    for(int m= 0; m < (FHT_N); m++)
+    {
+      Serial.print(fht_input[m]);
+      Serial.print(",");
+    }
+    Serial.println();
+    
+    fht_reorder(); // Reorder data for fht
+    fht_run(); // Run the fht on data
+    fht_mag_lin(); // Find magnitude of data
    
-  // Print convert digit to console (FOR DEBUG ONLY)
-  // Serial.println(digit28bit(digit1, 0));
-  // Serial.println(digit28bit(digit2, 0));
-  // Serial.println(digit28bit(digit3, 0));
-  // Serial.println(digit28bit(digit4, 0));  
-  
-  // Display each digit; output to shift registers
-  digitalWrite(strclock, LOW);
-  shiftOut(datapin, clock1, MSBFIRST, digit28bit(digit1, 0));
-  shiftOut(datapin, clock2, MSBFIRST, digit28bit(digit2, 0));
-  shiftOut(datapin, clock3, MSBFIRST, digit28bit(digit3, 0));
-  shiftOut(datapin, clock4, MSBFIRST, digit28bit(digit4, 0));
-  digitalWrite(strclock, HIGH);
-  
-  // Wait for 1000 ms
-  delay(1000);
+    for(int n = 0; n < (FHT_N/2); n++)
+    {
+      Serial.print((float) fht_lin_out[n]);
+      Serial.print(",");
+    }
+    Serial.println();
+    
+    freq = max_of_array(fht_lin_out)*100000/FHT_N;
+    
+    Serial.println(freq);
+  }
 }
 
-// Obtain digit from value; digit can be (1 - 4)
-int getdigit(int value, int digit)
+// Finds max of windowed array
+uint16_t max_of_array(uint16_t a[])
 {
-  int returndigit;
-
-  switch(digit)
-  {
-    case 1:
-      returndigit = floor((value % 10000)/1000);
-      break;
-    case 2:
-      returndigit = floor((value % 1000)/100);
-      break;
-    case 3:
-      returndigit = floor((value % 100)/10);
-      break;
-    case 4:
-      returndigit = value % 10;
-      break;
-    default:
-      returndigit = 0;
-  }
-
-  return returndigit;
-}
-
-/*
-USAGE
-digit - is the digit to be convert to 8 bit value; can be 0 - 9
-decimal - displays decimal; can be 0(off) - 1(on)
-*/  
-int digit28bit(int digit, int decimal)
-{
-  // Return Value
-  int eightbit = 0;
+  uint16_t temp_max = a[1];
+  uint16_t k;
   
-  switch (digit)
+  for(uint16_t i = 1; i<(FHT_N/2);i++)
   {
-    // Digits 0 - 9
-    case 0:
-      eightbit = 1;
-      break;
-    case 1:
-      eightbit = 55;
-      break;
-    case 2:
-      eightbit = 66;
-      break;
-    case 3:
-      eightbit = 18;
-      break;
-    case 4:
-      eightbit = 52;
-      break;
-    case 5:
-      eightbit = 24;
-      break;
-    case 6:
-      eightbit = 8;
-      break;
-    case 7:
-      eightbit = 51;
-      break;
-    case 8:
-      eightbit = 0;
-      break;
-    case 9:
-      eightbit = 48;
-      break;
-    // Blank
-    default:
-      eightbit = 127;
+    if(temp_max < a[i])
+      uint16_t k = i;
   }
   
-  // Does decimal need to be off?
-  if (decimal != 1)
-  {
-    eightbit = eightbit + 128; // turns decimal off
-  }
+  if(temp_max==0)
+    k = 0;
   
-  return eightbit;
+  Serial.println(k);
+    
+  return k;
 }
