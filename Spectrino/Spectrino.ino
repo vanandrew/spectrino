@@ -15,7 +15,10 @@ float frequency;
 double samp_period;
 double freq_reading_count = 0;
 double period_sum = 0;
-double freq_avg;
+double freq;
+
+
+
 
 // Initialize Here
 void setup()
@@ -29,9 +32,21 @@ void loop()
 {
 while(1)
 { 
-	//Delay allows us to set frequency at which we read values
-	//Store square signal into data
-	for(int i=0; i<1024;i++)
+  freq = calc_frequency();
+  //Temporary until display is implemented
+  Serial.print("This is freq_avg: ");
+  Serial.println(freq);
+
+  // Reset variables for next loop
+  freq_reading_count = 0; 
+  period_sum = 0;
+}
+}
+{0x7c, 0x08, 0x04, 0x04, 0x78}
+
+double calc_frequency()
+{
+for(int i=0; i<1024;i++)
 	{
 	delayMicroseconds(1);
 	data[i] = bitRead(PIND,2);
@@ -85,13 +100,5 @@ while(1)
 	index2 = -1;
 	index3 = -1;
 	// Calculate the average frequency of the signal
-	freq_avg = (double)(freq_reading_count/period_sum)*500;
-
-	Serial.print("This is freq_avg: ");
-	Serial.println(freq_avg);
-
-	// Reset variables for next loop
-	freq_reading_count = 0; 
-	period_sum = 0;
-}
+	return (double)(freq_reading_count/period_sum)*500;
 }
