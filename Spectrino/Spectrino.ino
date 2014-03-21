@@ -16,6 +16,7 @@ double samp_period;
 double freq_reading_count = 0;
 double period_sum = 0;
 double freq;
+int* ts_coord[2] = {0};
 
 
 
@@ -32,6 +33,7 @@ void loop()
 {
 while(1)
 { 
+  
   freq = calc_frequency();
   //Temporary until display is implemented
   Serial.print("This is freq_avg: ");
@@ -42,7 +44,7 @@ while(1)
   period_sum = 0;
 }
 }
-{0x7c, 0x08, 0x04, 0x04, 0x78}
+
 
 double calc_frequency()
 {
@@ -68,6 +70,7 @@ for(int i=0; i<1024;i++)
 			 index2 = i;
 			 temp_bool = data[i];
 		  }
+                  // Stores the third index if not already stored
 		  else if(index3 == -1){
 			 index3 = i;
 			 temp_bool = data[i];
@@ -100,5 +103,28 @@ for(int i=0; i<1024;i++)
 	index2 = -1;
 	index3 = -1;
 	// Calculate the average frequency of the signal
+        
 	return (double)(freq_reading_count/period_sum)*500;
+}
+
+//Pass by reference an array of two values
+void get_coordinates(){
+  
+  pinMode( 15, INPUT ); // Analog pin 1 
+  pinMode( 17, INPUT ); // Analog pin 3 
+  pinMode( 14, OUTPUT ); // Analog pin 0 
+  digitalWrite( 14, LOW ); // Use analog pin 0 as a GND connection 
+  pinMode( 16, OUTPUT ); // Analog pin 2 
+  digitalWrite( 16, HIGH ); // Use analog pin 2 as a +5V connection 
+  delay(2); // Wait for voltage to settle 
+  ts_coord[0] = analogRead( 1 );
+  
+  pinMode( 14, INPUT ); // Analog pin 0 
+  pinMode( 16, INPUT ); // Analog pin 2 
+  pinMode( 15, OUTPUT ); // Analog pin 1 
+  digitalWrite( 15, LOW ); // Use analog pin 1 as a GND connection 
+  pinMode( 17, OUTPUT ); // Analog pin 3 
+  digitalWrite( 17, HIGH ); // Use analog pin 3 as a +5V connection 
+  delay(2); // Wait for voltage to settle 
+  ts_coord[1] = analogRead( 0 ); // Read the Y value
 }
