@@ -25,7 +25,7 @@ void setup()
 	Serial.println("Begin Stream");
 }
 
-void loop(
+void loop()
 {
 while(1)
 { 
