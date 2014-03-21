@@ -36,7 +36,6 @@ while(1)
 	delayMicroseconds(1);
 	data[i] = bitRead(PIND,2);
 	} 
-<<<<<<< HEAD
   
 	temp_bool = data[0];
 	for(int i = 0; i<1024;i++)
@@ -87,55 +86,7 @@ while(1)
 	index3 = -1;
 	// Calculate the average frequency of the signal
 	freq_avg = (double)(freq_reading_count/period_sum)*500;
-=======
-  
-	temp_bool = data[0];
-	for(int i = 0; i<1024;i++)
-	{
-		// Compares current index with past stored index; Store value is opposite
-		if(temp_bool != data[i])
-		{
-		  // Stores the first index if not already stored
-		  if(index1 == -1){
-			index1 = i;
-			temp_bool = data[i];
-		  }
-		  // Stores the second index if not already stored
-		  else if(index2 == -1){
-			 index2 = i;
-			 temp_bool = data[i];
-		  }
-		  else if(index3 == -1){
-			 index3 = i;
-			 temp_bool = data[i];
-		  }
-		  
-		}   
-    
-		//Calculate frequency based on index locations
-		if(index1 != -1 && index2 != -1 && index3 != -1)
-		{
-			freq_reading_count++;
-			samp_period = (double)(index3-index1);
-			Serial.print("This is index3: ");
-			Serial.println(index3);
-			Serial.print("This is index1: ");
-			Serial.println(index1);
-			
-			period_sum+=samp_period;
-			index1 = -1;
-			index2 = -1;
-			index3 = -1;
-		}
-  
-	}//end of for loop 
-  
-	// Wait 1 second
-	delay(1000);
-  
-	// Calculate the average frequency of the signal
-	freq_avg = (double)(freq_reading_count/period_sum)*1000;
->>>>>>> 3666c47bc11d829c8e4f385be68da69689f9b69e
+
 	Serial.print("This is freq_avg: ");
 	Serial.println(freq_avg);
 
@@ -144,4 +95,3 @@ while(1)
 	period_sum = 0;
 }
 }
-
