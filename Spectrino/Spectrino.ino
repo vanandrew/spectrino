@@ -17,6 +17,11 @@ double freq_reading_count = 0;
 double period_sum = 0;
 double freq;
 int* ts_coord[2] = {0};
+double blank_conc = 0;
+double standard = 0;
+double sd_conc = 0;
+char standard_value[5] = 0;
+int char_count = 0;
 
 
 
@@ -33,8 +38,19 @@ void loop()
 {
 while(1)
 { 
+  if(reset())
+    clear_values();
+  //while blank is read
+  while(read_blank())
+  {
+     //enter when standard is pushed
+     while(read_standard()){
+        //exit read_standard when all values are input
+        out_measurement();
+     }
+
+  }
   
-  freq = calc_frequency();
   //Temporary until display is implemented
   Serial.print("This is freq_avg: ");
   Serial.println(freq);
@@ -45,6 +61,17 @@ while(1)
 }
 }
 
+double out_measurement(){
+  //returns concentration of the sample
+  return get_frequency() * standard/(sd_freq - blank_freq);
+}
+
+boolean read_blank()
+{
+        // Stores the frequency of the blank
+        blank = calc_frequency();  
+        //Return true if blank is pushed, false otherwise
+}
 
 double calc_frequency()
 {
@@ -127,4 +154,120 @@ void get_coordinates(){
   digitalWrite( 17, HIGH ); // Use analog pin 3 as a +5V connection 
   delay(2); // Wait for voltage to settle 
   ts_coord[1] = analogRead( 0 ); // Read the Y value
+}
+
+
+
+
+  void read_blank()
+  {
+
+    while(asdlkjaskldj && reset==0)
+     
+     if(reset)
+      break;
+  }
+
+// This function takes the position input of the digitizer and returns the appropriate function
+void digitizer_control()
+{
+    // Reset
+    if ()
+    {
+        // Clear Variables
+        blank = 0;
+        standard = 0;
+        memset(standard_value,0,sizeof(standard_value));
+    }
+
+    // Blank
+    else if()
+    {
+        // Stores the frequency of the blank
+        blank_freq = calc_frequency();
+    }
+    s
+    // Standard
+    else if()
+    {
+        // Stores the frequency of the Standard
+        standard_freq = calc_frequency();
+    }
+    
+    // Measure
+    else if()
+    {
+        
+    }
+
+    // Clear
+    else if()
+    {
+        // Reset standard concentration
+        memset(standard_value,0,sizeof(standard_value));
+    }
+
+    // Enter
+    else if()
+    {
+        // Stores the value of the standard as a number
+         = atoi();
+    }
+    
+    // 9
+    else if()
+    {
+        
+
+    }
+
+    // 8
+    else if()
+    {
+    }
+
+    // 7
+    else if()
+    {
+    }
+
+    // 6
+    else if()
+    {
+    }
+
+    // 5
+    else if()
+    {
+    }
+
+    // 4
+    else if()
+    {
+    }
+
+    // 3
+    else if()
+    {
+    }
+    
+    // 2
+    else if()
+    {
+    }
+
+    // 1
+    else if()
+    {
+    }
+
+    // 0
+    else if()
+    {
+    }
+
+    // Everything Else
+    else
+    {
+    }
 }
