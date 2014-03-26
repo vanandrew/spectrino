@@ -1,4 +1,4 @@
-extern int* ts_coord[2] = {0}; // Creates corrdinate array availiable for all
+extern int* ts_coord[2] = {0}; // Creates coordinate array availiable for all
 
 // Waits for touchscreen input and returns input
 char touchscreen_input()
