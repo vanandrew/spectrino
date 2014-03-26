@@ -1,3 +1,7 @@
+
+extern ts_coord[2] = {}
+
+// Waits for touchscreen input and returns input
 char touchscreen_input()
 {
     while(1)
@@ -105,4 +109,26 @@ char touchscreen_input()
             return '.';
         }
     }
+}
+
+//Pass by reference an array of two values
+void get_coordinates(){
+  
+  pinMode( 15, INPUT ); // Analog pin 1 
+  pinMode( 17, INPUT ); // Analog pin 3 
+  pinMode( 14, OUTPUT ); // Analog pin 0 
+  digitalWrite( 14, LOW ); // Use analog pin 0 as a GND connection 
+  pinMode( 16, OUTPUT ); // Analog pin 2 
+  digitalWrite( 16, HIGH ); // Use analog pin 2 as a +5V connection 
+  delay(2); // Wait for voltage to settle 
+  ts_coord[0] = analogRead( 1 );
+  
+  pinMode( 14, INPUT ); // Analog pin 0 
+  pinMode( 16, INPUT ); // Analog pin 2 
+  pinMode( 15, OUTPUT ); // Analog pin 1 
+  digitalWrite( 15, LOW ); // Use analog pin 1 as a GND connection 
+  pinMode( 17, OUTPUT ); // Analog pin 3 
+  digitalWrite( 17, HIGH ); // Use analog pin 3 as a +5V connection 
+  delay(2); // Wait for voltage to settle 
+  ts_coord[1] = analogRead( 0 ); // Read the Y value
 }
