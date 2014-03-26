@@ -1,5 +1,4 @@
-
-extern ts_coord[2] = {}
+extern int* ts_coord[2] = {0}; // Creates corrdinate array availiable for all
 
 // Waits for touchscreen input and returns input
 char touchscreen_input()
@@ -34,6 +33,9 @@ char touchscreen_input()
         // Reset
         else if()
         {
+            blank = 0;
+            standard = 0;
+            memset(standard_value,0,sizeof(standard_value));
             return 'r';
         }
         
