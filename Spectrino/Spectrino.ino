@@ -5,26 +5,16 @@
   Written by Andrew Van, Jeffrey Smith, and Claire Kalkbrenner
 */
 
-// Variables
-boolean temp_bool;
-boolean data[1024];
-int index1 = -1;
-int index2 = -1;
-int index3 = -1;
-float frequency;
-double samp_period;
-double freq_reading_count = 0;
-double period_sum = 0;
-double freq;
+//includes the touch screen function, which outputs a character corresponding to a touchscreen button, also waits until a button is pushed
+#include "TouchscreenFunctions.h"
+
+// Global Variables
 int* ts_coord[2] = {0};
 double blank_conc = 0;
 double standard = 0;
-double sd_conc = 0;
+int sd_conc = 0;
 char standard_value[5] = 0;
 int char_count = 0;
-
-
-
 
 // Initialize Here
 void setup()
@@ -37,28 +27,34 @@ void setup()
 void loop()
 {
 while(1)
-{ 
-  if(reset())
-    clear_values();
-  //while blank is read
-  while(read_blank())
-  {
-     //enter when standard is pushed
-     while(read_standard()){
-        //exit read_standard when all values are input
-        out_measurement();
-     }
-
-  }
-  
-  //Temporary until display is implemented
-  Serial.print("This is freq_avg: ");
-  Serial.println(freq);
-
-  // Reset variables for next loop
-  freq_reading_count = 0; 
-  period_sum = 0;
+{
+  reset = false;
+  while(!read_blank()) {;}
+  while(!read_standard()) {;}
+  while(out_measurement()) {;}   
 }
+}
+
+
+
+boolean read_standard()
+{
+    
+    if(touchscreen_input(/*   */)
+    { 
+       // Stores the frequency of the standard
+       standard_freq = calc_frequency();
+       ts_coord[2] = {0}; // Clear coordinates for next touchscreen input
+       sd_conc = 0; // Reset Standard Concentration value to 0
+       int curr_digit = 0;
+       while(get_digit(curr_value)) // Watch for enter key press
+       {
+        curr_digit++;
+       }
+
+    }
+    else
+      return false;
 }
 
 double out_measurement(){
@@ -66,15 +62,39 @@ double out_measurement(){
   return get_frequency() * standard/(sd_freq - blank_freq);
 }
 
-boolean read_blank()
+boolean enter()
 {
-        // Stores the frequency of the blank
-        blank = calc_frequency();  
-        //Return true if blank is pushed, false otherwise
+  if(/*coordinates of enter*/)
+    return true;
+  else
+    return false;
+
+
+// This function returns the digit called
+char get_digit(int curr_value)
+{
+  boolean digit_found = false;
+  char digit = touchscreen_input();
+      
+  
+  standard_value[curr_value] = digit;
+  return true;
 }
 
 double calc_frequency()
 {
+
+double freq_output; // Stores output frequency  
+boolean data[1024]; // Array to store data
+// Indexes to track waveform
+int index1 = -1;
+int index2 = -1;
+int index3 = -1;
+double samp_period = 0; // Stores Sampling Period
+double freq_reading_count = 0; // Stores nnumber of frequencies read
+double period_sum = 0; // Stores the sum of the sampling periods
+boolean temp_bool; // Tracks current value of data in array
+
 for(int i=0; i<1024;i++)
 	{
 	delayMicroseconds(1);
@@ -129,9 +149,11 @@ for(int i=0; i<1024;i++)
         index1 = -1;
 	index2 = -1;
 	index3 = -1;
-	// Calculate the average frequency of the signal
+	
+        // Calculate the average frequency of the signal
+        freq_output = (double)(freq_reading_count/period_sum)*500;
         
-	return (double)(freq_reading_count/period_sum)*500;
+        return freq_output;
 }
 
 //Pass by reference an array of two values
@@ -156,118 +178,31 @@ void get_coordinates(){
   ts_coord[1] = analogRead( 0 ); // Read the Y value
 }
 
-
-
-
-  void read_blank()
-  {
-
-    while(asdlkjaskldj && reset==0)
-     
-     if(reset)
-      break;
-  }
-
-// This function takes the position input of the digitizer and returns the appropriate function
-void digitizer_control()
+boolean reset()
 {
-    // Reset
-    if ()
-    {
         // Clear Variables
         blank = 0;
         standard = 0;
+        reset = true;
         memset(standard_value,0,sizeof(standard_value));
-    }
 
-    // Blank
-    else if()
-    {
-        // Stores the frequency of the blank
-        blank_freq = calc_frequency();
-    }
-    s
-    // Standard
-    else if()
-    {
-        // Stores the frequency of the Standard
-        standard_freq = calc_frequency();
-    }
-    
-    // Measure
-    else if()
-    {
-        
-    }
+        get_coordinates();
+        if(/*touchscreen coordinates for reset*/)
+          return true;
+        else
+          return false;
+}
 
-    // Clear
-    else if()
-    {
-        // Reset standard concentration
-        memset(standard_value,0,sizeof(standard_value));
+boolean read_blank()
+{
+    get_coordinates(); // Update most recent coordinates pushed
+    if(/*touchscreen dimensions for blank */)
+    { 
+       // Stores the frequency of the blank
+       blank_freq = calc_frequency();
+       ts_coord[2] = {0}; // Clear coordinates for next touchscreen input
+       return true;
     }
-
-    // Enter
-    else if()
-    {
-        // Stores the value of the standard as a number
-         = atoi();
-    }
-    
-    // 9
-    else if()
-    {
-        
-
-    }
-
-    // 8
-    else if()
-    {
-    }
-
-    // 7
-    else if()
-    {
-    }
-
-    // 6
-    else if()
-    {
-    }
-
-    // 5
-    else if()
-    {
-    }
-
-    // 4
-    else if()
-    {
-    }
-
-    // 3
-    else if()
-    {
-    }
-    
-    // 2
-    else if()
-    {
-    }
-
-    // 1
-    else if()
-    {
-    }
-
-    // 0
-    else if()
-    {
-    }
-
-    // Everything Else
     else
-    {
-    }
+      return false;
 }
