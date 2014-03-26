@@ -21,6 +21,8 @@ char touchscreen_input()
         // Clear
         else if ()
         {
+            // Reset standard concentration
+            memset(standard_value,0,sizeof(standard_value));
             return 'c';
         }
         
