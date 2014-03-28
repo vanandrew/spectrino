@@ -1,3 +1,6 @@
+#ifndef DATAAQUIREPROCESS_H
+#define DATAAQUIREPROCESS_H
+
 #include "Arduino.h" // Include Arduino Library
 
 // Aquires and calculates the frequency from the sensor
@@ -79,5 +82,7 @@ for(int i=0; i<1024;i++)
 
 double absorption(double blank_freq)
 {
-  return (-log(calc_frequency()/blank_freq)); 
+  return (-log10(calc_frequency()/blank_freq)); 
 }
+
+#endif

@@ -1,5 +1,10 @@
+#ifndef TOUCHSCREENFUNCTIONS_H
+#define TOUCHSCREENFUNCTIONS_H
+
 #include "Arduino.h" // Include Arduino Library
 #include "dataaquireprocess.h" // Contains data aquisition and processing functions
+#include "display.h"
+
 
 // Defines touchscreen analog ports
 #define xLow  17
@@ -58,9 +63,25 @@ char touchscreen_input()
     }
     
     // Display measurement data
-    if (blank_freq == 0)
+    /*if (blank_freq == 0)
       Serial.println("Reference Needed");
-    else
-      Serial.println(absorption(blank_freq));
+    else{*/
+      char temp_arr[4];
+      double absorb = absorption(blank_freq);
+      
+      double thingy = 1.555;
+      int whole = thingy;
+      int decimal = (thingy-whole)*1000;
+      //sprintf(temp_arr, "%1.3f",thingy );
+      //String new_string(temp_arr);
+      dtostrf(thingy, 4, 3, temp_arr);
+
+      gotoXY(4,1);
+      //temp_str.toCharArray(temp_arr, temp_str.length());
+      //String whole_s = whole;
+      LcdString(temp_arr); //to go to display
+    //}
   }
 }
+
+#endif

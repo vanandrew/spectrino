@@ -7,16 +7,17 @@
 
 //includes the touch screen function, which outputs a character corresponding to a touchscreen button, also waits until a button is pushed
 #include "TouchscreenFunctions.h"
-
-// Global Variables
-boolean reset_flag = false; // flag for resetting device measurement process
+#include "display.h"
 
 // Initialize Here
 void setup()
 {
 	DDRD = DDRD | B00000000; //Set all  pins(0 to 7) to read mode
 	Serial.begin(9600); // Setup serial connection with 9600 bps baud rate
-	Serial.println("Begin Stream");
+    Serial.println("Begin Stream");
+   LcdInitialise();
+   LcdClear();
+      //drawBox();
 }
 
 void loop()
