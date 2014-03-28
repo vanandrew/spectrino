@@ -54,7 +54,6 @@ char touchscreen_input()
         blank_freq = calc_frequency();
         return 'b';
     }
-    
     // Reset
     else if(ts_coords[0] > 500 && ts_coords[0] < 900)
     {
@@ -62,9 +61,9 @@ char touchscreen_input()
         return 'r';
     }
     
-	// Display text label "Absorbance"
-	gotoXY(1,1);
-	LcdString("Absorbance:");
+    // Display text label "Absorbance"
+    gotoXY(1,1);
+    LcdString("Absorbance:");
 	
     // Display measurement data
     if (blank_freq == 0)
@@ -77,12 +76,12 @@ char touchscreen_input()
 	  LcdString("Insert Blank");
     }
     else
-	{
-	  // Take absorbance reading and convert to string; store in abs_array
-	  dtostrf(absorption(blank_freq), 4, 3, abs_array);
+    {
+      // Take absorbance reading and convert to string; store in abs_array
+      dtostrf(absorption(blank_freq), 4, 3, abs_array);
       
-	  // Display absorbance value
-	  gotoXY(2,1);
+      // Display absorbance value
+      gotoXY(2,1);
       LcdString(abs_array); //Display absorbance
     }
   }
