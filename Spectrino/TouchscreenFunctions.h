@@ -2,9 +2,8 @@
 #define TOUCHSCREENFUNCTIONS_H
 
 #include "Arduino.h" // Include Arduino Library
-#include "dataaquireprocess.h" // Contains data aquisition and processing functions
-#include "display.h"
-
+#include "dataaquireprocess.h" // Contains data acquisition and processing functions
+#include "display.h" // Library containing functions for the 5110 Nokia Display
 
 // Defines touchscreen analog ports
 #define xLow  17
@@ -12,8 +11,9 @@
 #define yLow  16
 #define yHigh 14
 
-int ts_coords[2] = {0}; // Creates coordinate array availiable for all
+int ts_coords[2] = {0}; // Creates coordinate array available for all
 double blank_freq = 0; // Stores frequency of blank
+char abs_array[5]; // Character array holding absorbance value;
 
 void get_coordinates()
 {  
@@ -62,25 +62,29 @@ char touchscreen_input()
         return 'r';
     }
     
+	// Display text label "Absorbance"
+	gotoXY(1,1);
+	LcdString("Absorbance:");
+	
     // Display measurement data
-    /*if (blank_freq == 0)
-      Serial.println("Reference Needed");
-    else{*/
-      char temp_arr[4];
-      double absorb = absorption(blank_freq);
+    if (blank_freq == 0)
+    {
+	  gotoXY(2,1);
+      LcdString("Reference");
+	  gotoXY(3,1);
+	  LcdString("Needed");
+	  gotoXY(4,1);
+	  LcdString("Insert Blank");
+    }
+    else
+	{
+	  // Take absorbance reading and convert to string; store in abs_array
+	  dtostrf(absorption(blank_freq), 4, 3, abs_array);
       
-      double thingy = 1.555;
-      int whole = thingy;
-      int decimal = (thingy-whole)*1000;
-      //sprintf(temp_arr, "%1.3f",thingy );
-      //String new_string(temp_arr);
-      dtostrf(thingy, 4, 3, temp_arr);
-
-      gotoXY(4,1);
-      //temp_str.toCharArray(temp_arr, temp_str.length());
-      //String whole_s = whole;
-      LcdString(temp_arr); //to go to display
-    //}
+	  // Display absorbance value
+	  gotoXY(2,1);
+      LcdString(abs_array); //Display absorbance
+    }
   }
 }
 
