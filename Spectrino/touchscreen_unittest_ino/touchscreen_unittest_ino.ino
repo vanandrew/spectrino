@@ -1,14 +1,30 @@
-#include "Arduino.h" // Include Arduino Library
-#include "dataaquireprocess.h" // Contains data aquisition and processing functions
 
-// Defines touchscreen analog ports
 #define xLow  17
 #define xHigh 15
 #define yLow  16
 #define yHigh 14
 
-int ts_coords[2] = {0}; // Creates coordinate array availiable for all
-double blank_freq = 0; // Stores frequency of blank
+int ts_coords[2] = {0};
+// Initialize Here
+void setup()
+{
+	DDRD = DDRD | B00000000; //Set all  pins(0 to 7) to read mode
+	Serial.begin(9600); // Setup serial connection with 9600 bps baud rate
+	Serial.println("Begin Stream");
+}
+
+void loop()
+{
+while(1)
+{
+  get_coordinates();
+  Serial.print("X:");
+  Serial.print(ts_coords[0]);
+  Serial.print(", Y:");
+  Serial.println(ts_coords[1]);
+  delay(200);
+}
+}
 
 void get_coordinates()
 {  
@@ -33,34 +49,4 @@ void get_coordinates()
   pinMode(xHigh,INPUT);
   delay(10); // Wait for voltage to settle
   ts_coords[1] = analogRead(xLow-14); // Read the X value
-}
-
-// Waits for touchscreen input and returns input
-char touchscreen_input()
-{
-  while(1)
-  {
-    // Update with most recent coordinates
-    get_coordinates();
-  
-    // Blank
-    if (ts_coords[0] > 100 && ts_coords[0] < 500)
-    {
-        blank_freq = calc_frequency();
-        return 'b';
-    }
-    
-    // Reset
-    else if(ts_coords[0] > 500 && ts_coords[0] < 900)
-    {
-        blank_freq = 0;
-        return 'r';
-    }
-    
-    // Display measurement data
-    if (blank_freq == 0)
-      Serial.println("Reference Needed");
-    else
-      Serial.println(absorption(blank_freq));
-  }
 }
