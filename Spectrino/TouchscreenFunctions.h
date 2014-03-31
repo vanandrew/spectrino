@@ -11,9 +11,12 @@
 #define yLow  16
 #define yHigh 14
 
+int freeRam();
+
 int ts_coords[2] = {0}; // Creates coordinate array available for all
 double blank_freq = 0; // Stores frequency of blank
 char abs_array[5]; // Character array holding absorbance value;
+int i = 0; /// counter
 
 void get_coordinates()
 {  
@@ -52,39 +55,42 @@ char touchscreen_input()
     if (ts_coords[0] > 100 && ts_coords[0] < 500)
     {
         blank_freq = calc_frequency();
-        return 'b';
+        //return 'b';
     }
     // Reset
-    else if(ts_coords[0] > 500 && ts_coords[0] < 900)
+    else if(ts_coords[0] > 500 && ts_coords[0] < 1000)
     {
         blank_freq = 0;
-        return 'r';
+        //return 'r';
     }
     
+    //Serial.println(blank_freq);
     // Display text label "Absorbance"
     gotoXY(1,1);
     LcdString("Absorbance:");
-	
-    // Display measurement data
+     // Display measurement data
     if (blank_freq == 0)
     {
-	  gotoXY(2,1);
-      LcdString("Reference");
-	  gotoXY(3,1);
-	  LcdString("Needed");
-	  gotoXY(4,1);
-	  LcdString("Insert Blank");
+	gotoXY(1,3);
+        LcdString("Insert blank");
     }
     else
     {
-      // Take absorbance reading and convert to string; store in abs_array
-      dtostrf(absorption(blank_freq), 4, 3, abs_array);
-      
-      // Display absorbance value
-      gotoXY(2,1);
-      LcdString(abs_array); //Display absorbance
+        // Take absorbance reading and convert to string; store in abs_array
+        dtostrf(absorption(blank_freq), 4, 2, abs_array);
+        Serial.println(abs_array);
+        // Display absorbance value
+        gotoXY(1,2);
+        LcdString("Insert");
+        gotoXY(1,3);
+        LcdString("Samples:");
+        gotoXY(1,4);
+        LcdString(abs_array); //Display absorbance
     }
+    LcdClear();
   }
 }
+
+
 
 #endif

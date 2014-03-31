@@ -77,10 +77,10 @@ double calc_frequency()
   return freq_output;
 }
   
-double absorption(double blank_freq)
+double absorption(double blank_f)
 {
-  if (blank_freq <= 0)
-    return (-log10(calc_frequency()/blank_freq));
+  if (blank_f >= 0)
+    return (-log10(calc_frequency()/blank_f));
   else
     return -1;
 }

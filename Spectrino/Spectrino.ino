@@ -16,12 +16,14 @@ void setup()
   DDRD = DDRD | B00000000; // Set all  pins(0 to 7) to read mode
 	
   // Setup serial connection with 9600 bps baud rate
-  // Serial.begin(9600);
-  // Serial.println("Begin Stream");
+  Serial.begin(9600);
+  //Serial.println("Begin Stream");
 	
   // Initialize the Display
   LcdInitialise();
+  delay(1);
   LcdClear();
+  delay(1);
 }
 
 void loop()
